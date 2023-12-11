@@ -1,10 +1,15 @@
-import os
-
+import logging
 import telebot
+import os, logging
+from dotenv import load_dotenv
 
+
+load_dotenv()
 
 token = os.getenv('token')
 bot = telebot.TeleBot(token)
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -13,7 +18,7 @@ def start(message):
     :param message:
     :return:
     """
-    bot.reply_to(message, f"Привет! Я бот для приема сообщений администратору канала 'глаголю на скидочном'.🤖\nВ следующем сообщении можете просто вставить ссылку! 😊")
+    bot.reply_to(message, f"Привет! Я бот для приема сообщений администратору канала 'глаголю на скидочном'.🤖\nГотов передать сообщение анонимно! 😊")
 
 @bot.message_handler(func=lambda message: True)
 def echo(message):
@@ -25,13 +30,15 @@ def echo(message):
     user_id = 527186007  #437513483  # Замените на ID пользователя, которому нужно переслать сообщение
     #user_id = 437513483
     username = message.from_user.first_name  # Имя пользователя, которому отправляем благодарность
-    if 'http' in message.text:
+    if message.text:
+
+        # Если есть текстовое сообщение, отправляем его текст
         bot.send_message(user_id, message.text)
-        reply_text = f"Спасибо, {username}! Я очень вам благодарен! 😊"  # Отправка благодарности пользователю в ответ на его сообщение
+        reply_text = f"Спасибо, {username}! Я очень вам благодарен! 😊"
         bot.reply_to(message, reply_text)
-    else:
-        reply_text = f"Извините, {username}, но здесь нет ссылки! 🥲"  # Отправка благодарности пользователю в ответ на его сообщение
-        bot.reply_to(message, reply_text)
+        logging.info(f"Текстовое сообщение от {username}: {message.text}")
+
 
 def main():
-    bot.polling()
+    bot.infinity_polling(timeout=10, long_polling_timeout=5)
+

@@ -1,4 +1,8 @@
-from utils import main
+from aio_utils import main
+import asyncio
+import logging
+import sys
 
 
-main()
+logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+asyncio.run(main())
