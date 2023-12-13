@@ -30,7 +30,8 @@ async def process_start_command(message: Message):
 async def send_photo_echo(message: Message):
     username = message.from_user.first_name
     reply_text = f"Ты супер, {username} 😼 Спасибо за ОС:)"
-    await bot.send_photo(target_user_id, photo=message.photo[-1].file_id)
+    #await bot.send_message(target_user_id, text=f'{message.caption}')
+    await bot.send_photo(target_user_id, caption=f'{message.caption}', photo=message.photo[-1].file_id)
     await bot.send_message(message.chat.id, reply_text)  # Отправка ответа анониму
 
 
